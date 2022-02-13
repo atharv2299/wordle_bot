@@ -1,6 +1,6 @@
 import os
 import sys
-
+import colored
 from typing import Counter
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir)
@@ -17,16 +17,25 @@ def main():
     pruned_list = word_list
     guess_list = word_list
     while len(pruned_list) > 1:
-        counter_list = [Counter()] * WORD_LEN
+        counter_list = [Counter() for _ in range(WORD_LEN)]
+
+        # check_set = set("".join(pruned_list))
+        # # 5 is the base number of letters in the set, so you want to see if you have one different letter per list element
+        # if len(check_set) < len(pruned_list) + 5:
+        #     print(None)
+
         best_guess = score_words(
             guess_list if len(guess_list) > 0 else pruned_list, counter_list
         )
-        print(best_guess)
+        print(colored.stylize(best_guess, (colored.fg("light_green"))))
+
         annotated_guess = list(chunks(input("Annotated Guess> ").strip().lower()))
+
         pruned_list = list(prune_list(pruned_list, annotated_guess, keep_word))
         print(pruned_list)
+
         guess_list = list(prune_list(guess_list, annotated_guess, keep_guess))
-        # print(pruned_list[:20])
+
     print(pruned_list[0])
 
 
