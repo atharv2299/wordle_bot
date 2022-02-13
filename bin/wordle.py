@@ -41,8 +41,10 @@ def main():
         if guess == answer:
             print("YOU WIN!")
             break
-
-        print(colorize(check_guess(guess, answer)))
+        printed_guess = check_guess(guess, answer)
+        if args.debug:
+            print("".join(printed_guess))
+        print(colorize(printed_guess))
 
 
 if __name__ == "__main__":

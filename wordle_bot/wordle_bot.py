@@ -19,3 +19,18 @@ def score_words(word_list, counter_list):
             max_score = current_score
             best_word = word
     return best_word
+
+
+def prune_list(word_list, annotated_guess):
+    def matches(word):
+        for letter, (prefix, guess_letter) in zip(word, annotated_guess):
+            has_letter = guess_letter in word
+            if prefix == "-" and has_letter:
+                return False
+            if prefix == "+" and letter != guess_letter:
+                return False
+            if prefix == "~" and (not has_letter or letter == guess_letter):
+                return False
+        return True
+
+    return filter(matches, word_list)

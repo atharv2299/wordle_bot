@@ -48,3 +48,8 @@ def check_guess(guess, answer):
         else:
             assign("-", ndx, letter)
     return output
+
+
+def chunks(lst, chunk_size=2):
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i : i + chunk_size]
