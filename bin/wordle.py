@@ -9,7 +9,7 @@ sys.path.insert(0, ROOT_DIR)
 
 from wordle_bot.utils import colorize, load_word_list, check_guess
 
-
+# TODO: Test with doled
 def main():
     parser = argparse.ArgumentParser(description="Wordle Game")
     parser.add_argument(
@@ -19,13 +19,19 @@ def main():
         action="store_true",
         default=False,
     )
+    parser.add_argument(
+        "-a",
+        "--answer",
+        help="Set target word",
+        default=None,
+    )
 
     args, _ = parser.parse_known_args()
 
     words = load_word_list()
     word_set = set(words)
 
-    answer = random.choice(words)
+    answer = args.answer or random.choice(words)
 
     if args.debug:
         print(answer)
