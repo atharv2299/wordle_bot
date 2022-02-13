@@ -4,13 +4,11 @@ import random
 import sys
 from typing import Counter
 
-import colored
-
 ROOT_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir)
 MODULE_DIR = os.path.join(ROOT_DIR, "wordle_bot")
 sys.path.insert(0, ROOT_DIR)
 
-from wordle_bot.utils import load_word_list, colorize
+from wordle_bot.utils import colorize, load_word_list
 
 
 def main():
@@ -42,7 +40,7 @@ def main():
             guess = input("Guess> ").strip().lower()
 
         if guess == answer:
-            print(colored.stylize("YOU WIN!", colored.fg("green")))
+            print("YOU WIN!")
             break
 
         output = [None] * len(answer)
@@ -67,7 +65,7 @@ def main():
             else:
                 assign("-", ndx, letter)
 
-        print(colorize("".join(output)))
+        print(colorize(output))
 
 
 if __name__ == "__main__":
