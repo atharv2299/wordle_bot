@@ -21,30 +21,36 @@ def score_words(word_list, counter_list):
     return best_word
 
 
-def keep_word(prefix, letter, guess_letter, has_letter):
+def keep_word(prefix, letter, guess_letter, has_letter, allowed_counts):
     if prefix == "+" and letter != guess_letter:
         return False
     if prefix == "~" and (not has_letter or letter == guess_letter):
         return False
-    if prefix == "-" and has_letter:
+    if prefix == "-" and has_letter and allowed_counts[letter] <= 0:
         return False
     return True
 
 
-def keep_guess(prefix, letter, guess_letter, has_letter):
+def keep_guess(prefix, letter, guess_letter, has_letter, allowed_counts):
     if prefix in ["+", "~"] and letter == guess_letter:
         return False
-    if prefix == "-" and has_letter:
+    if prefix == "-" and has_letter and allowed_counts[letter] <= 0:
         return False
     return True
 
 
 def prune_list(word_list, annotated_guess, func):
     def matches(word):
+        allowed_counts = Counter()
+        for prefix, guess_letter in annotated_guess:
+            if prefix in ["~", "+"]:
+                allowed_counts[guess_letter] += 1
+
         for letter, (prefix, guess_letter) in zip(word, annotated_guess):
             has_letter = guess_letter in word
-            if not func(prefix, letter, guess_letter, has_letter):
+            if not func(prefix, letter, guess_letter, has_letter, allowed_counts):
                 return False
+            allowed_counts[letter] -= 1
         return True
 
     return filter(matches, word_list)
