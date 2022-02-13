@@ -1,11 +1,14 @@
 import json
+import os
 from typing import Counter
 
 import colored
 
+ROOT_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)
+
 
 def load_word_list():
-    words = json.load(open("word_list.json"))
+    words = json.load(open(os.path.join(ROOT_DIR, "word_list.json")))
     return words
 
 
