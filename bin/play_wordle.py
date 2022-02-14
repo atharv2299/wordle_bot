@@ -13,20 +13,17 @@ from wordle_bot import score_words, prune_list, keep_word, keep_guess
 
 def main():
     word_list = load_word_list()
-    WORD_LEN = len(word_list[0])
     pruned_list = word_list
     guess_list = word_list
     while len(pruned_list) > 1:
-        counter_list = [Counter() for _ in range(WORD_LEN)]
 
+        # TODO: ENDGAME PLAYING
         # check_set = set("".join(pruned_list))
         # # 5 is the base number of letters in the set, so you want to see if you have one different letter per list element
         # if len(check_set) < len(pruned_list) + 5:
         #     print(None)
 
-        best_guess = score_words(
-            guess_list if len(guess_list) > 0 else pruned_list, counter_list
-        )
+        best_guess = score_words(guess_list if len(guess_list) > 0 else pruned_list)
         print(colored.stylize(best_guess, (colored.fg("light_green"))))
 
         annotated_guess = list(chunks(input("Annotated Guess> ").strip().lower()))
