@@ -7,7 +7,7 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir)
 MODULE_DIR = os.path.join(ROOT_DIR, "wordle_bot")
 sys.path.insert(0, ROOT_DIR)
 
-from wordle_bot import prune_list, score_words
+from wordle_bot import prune_list, score_words, keep_guess, keep_word
 from wordle_bot.utils import check_guess, chunks, colorify, load_word_list
 
 
@@ -33,7 +33,8 @@ def main():
 
     word_list = load_word_list()
     pruned_list = word_list
-    num_steps = 0
+    guess_list = word_list
+    num_steps = 1
     guesses = []
     if args.autoplay is not None:
         autoplay = args.autoplay[0] or random.choice(word_list)
@@ -42,8 +43,12 @@ def main():
     while len(pruned_list) > 1:
         num_steps += 1
 
-        best_guess = score_words(pruned_list, word_list)
+        # best_guess = score_words(pruned_list, word_list)
+        best_guess = score_words(
+            pruned_list, guess_list if len(guess_list) > 0 else word_list
+        )
         word_list.remove(best_guess)
+        # guess_list.remove(best_guess)
         guesses.append(best_guess)
 
         print(colorify("=" * 20, "light_green"))
@@ -55,7 +60,8 @@ def main():
         else:
             annotated_guess = check_guess(best_guess, autoplay)
 
-        pruned_list = list(prune_list(pruned_list, annotated_guess))
+        pruned_list = list(prune_list(pruned_list, annotated_guess, keep_word))
+        guess_list = list(prune_list(guess_list, annotated_guess, keep_guess))
 
         if args.debug:
             print(pruned_list)

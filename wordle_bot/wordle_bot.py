@@ -1,5 +1,5 @@
-import math
 from typing import Counter
+import math
 
 
 def score_words(pruned_list, word_list):
@@ -28,7 +28,8 @@ def score_words(pruned_list, word_list):
         seen_letter = Counter(word)
 
         for ndx, letter in enumerate(word):
-            current_score += collapsed_entropy[letter] / (seen_letter[letter])
+            # current_score += collapsed_entropy[letter] / seen_letter[letter]
+            current_score += counter_list[ndx][letter] / seen_letter[letter]
 
         if current_score > max_score:
             max_score = current_score
@@ -36,32 +37,61 @@ def score_words(pruned_list, word_list):
     return best_word
 
 
-def prune_list(word_list, annotated_guess):
+def keep_word(word, annotated_guess):
+
+    allowed_counts = Counter()
+
+    for prefix, guess_letter in annotated_guess:
+
+        if prefix in ["~", "+"]:
+            allowed_counts[guess_letter] += 1
+
+    word_counter = Counter(word)
+
+    for prefix, guess_letter in annotated_guess:
+
+        if prefix == "-":
+
+            if word_counter[guess_letter] > allowed_counts[guess_letter]:
+                return False
+
+    for letter, (prefix, guess_letter) in zip(word, annotated_guess):
+
+        if prefix == "+" and letter != guess_letter:
+            return False
+
+        if prefix == "~" and (not guess_letter in word or letter == guess_letter):
+            return False
+    return True
+
+
+def keep_guess(word, annotated_guess):
+    # allowed_counts = Counter()
+
+    # for prefix, guess_letter in annotated_guess:
+
+    #     if prefix in ["~", "+"]:
+    #         allowed_counts[guess_letter] += 1
+
+    # word_counter = Counter(word)
+
+    # for prefix, guess_letter in annotated_guess:
+
+    #     if prefix == "-":
+
+    #         if word_counter[guess_letter] > allowed_counts[guess_letter]:
+    #             return False
+    # return True
+    guess_word = ""
+    for letter, (prefix, guess_letter) in zip(word, annotated_guess):
+        guess_word += guess_letter
+        if prefix == "-" and guess_letter in word:
+            return False
+    return word != guess_word
+
+
+def prune_list(word_list, annotated_guess, func):
     def matches(word):
-
-        allowed_counts = Counter()
-
-        for prefix, guess_letter in annotated_guess:
-
-            if prefix in ["~", "+"]:
-                allowed_counts[guess_letter] += 1
-
-        word_counter = Counter(word)
-
-        for prefix, guess_letter in annotated_guess:
-
-            if prefix == "-":
-
-                if word_counter[guess_letter] > allowed_counts[guess_letter]:
-                    return False
-
-        for letter, (prefix, guess_letter) in zip(word, annotated_guess):
-
-            if prefix == "+" and letter != guess_letter:
-                return False
-
-            if prefix == "~" and (not guess_letter in word or letter == guess_letter):
-                return False
-        return True
+        return func(word, annotated_guess)
 
     return filter(matches, word_list)
