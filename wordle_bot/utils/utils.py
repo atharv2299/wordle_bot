@@ -12,6 +12,10 @@ def load_word_list():
     return words
 
 
+def colorify(string, color):
+    return colored.stylize(string, (colored.fg(color)))
+
+
 def colorize(guess_response):
     COLOR_MAP = {
         "+": "light_green",
@@ -20,7 +24,7 @@ def colorize(guess_response):
     }
     colorized = ""
     for prefix, letter in guess_response:
-        colorized += colored.stylize(letter, (colored.fg(COLOR_MAP[prefix])))
+        colorized += colorify(letter, COLOR_MAP[prefix])
     return colorized
 
 
