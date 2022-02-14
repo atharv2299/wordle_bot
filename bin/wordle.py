@@ -7,7 +7,8 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir)
 MODULE_DIR = os.path.join(ROOT_DIR, "wordle_bot")
 sys.path.insert(0, ROOT_DIR)
 
-from wordle_bot.utils import colorize, load_word_list, check_guess
+from wordle_bot.utils import check_guess, colorize, load_word_list
+
 
 # TODO: Test with doled
 def main():
